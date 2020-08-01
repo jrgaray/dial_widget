@@ -3,11 +3,20 @@ import 'package:timestamp_dial/helper/calculateRotationalChange.dart';
 import 'dart:math';
 
 class Dial extends StatefulWidget {
-  Dial({Key key, this.height, this.options, this.color}) : super(key: key);
+  Dial(
+      {Key key,
+      this.height,
+      this.options,
+      this.color,
+      this.value,
+      this.onChange})
+      : super(key: key);
 
   final double height;
   final List options;
   final Color color;
+  final String value;
+  final Function(String) onChange;
 
   @override
   _DialState createState() => _DialState();
@@ -27,7 +36,6 @@ class _DialState extends State<Dial> {
   void initState() {
     super.initState();
     slices = widget.options.length > 11 ? widget.options.length : 30;
-    print(slices);
     tick = radian / slices;
     halfTick = tick / 2;
     optionsLength = widget.options.length;
@@ -57,20 +65,17 @@ class _DialState extends State<Dial> {
   }
 
   void _panEndHandler(DragEndDetails d, int size) {
-    final modAngle = (angle % tick);
-
-    setState(() {
-      if (modAngle >= halfTick) {
-        angle = ((angle / tick).floor() + 1) * tick;
-      } else {
-        angle = (angle / tick).floor() * tick;
-      }
-    });
+    final modAngle = ((angle + 0.000001) % tick);
+    final roundingMod = modAngle > halfTick ? 1 : 0;
+    setState(() => angle = ((angle / tick).floor() + roundingMod) * tick);
+    final newValueIndex = (angle / tick).abs().floor();
+    widget.onChange(widget.options[newValueIndex]);
   }
+
+  double calcAngle(int index) => angle + index * tick;
 
   @override
   Widget build(BuildContext context) {
-    final add = widget.height > 400 ? 0.0 : 35.0;
     return GestureDetector(
       onPanEnd: (details) => _panEndHandler(details, optionsLength),
       onPanUpdate: (details) {
@@ -88,7 +93,7 @@ class _DialState extends State<Dial> {
             final index = entry.key;
             return Center(
               child: Transform.rotate(
-                angle: angle + tick * index,
+                angle: calcAngle(index),
                 child: Transform.translate(
                   child: Text(
                     entry.value,
@@ -97,7 +102,7 @@ class _DialState extends State<Dial> {
                       fontSize: 10,
                     ),
                   ),
-                  offset: Offset(0, widget.height / -2.7 - add),
+                  offset: Offset(0, widget.height / -2.0 + 20),
                 ),
               ),
             );

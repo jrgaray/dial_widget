@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 
-Container Function(BuildContext) list = (context) => Container(
-      height: MediaQuery.of(context).size.height,
-      child: ListView(
-        children: List.generate(
-          1000,
-          (index) => Text('$index'),
-        ),
-      ),
-    );
+Widget Function(BuildContext, List) timestampList =
+    (context, timestamps) => Padding(
+          padding: EdgeInsets.only(bottom: 250),
+          child: Container(
+            height: MediaQuery.of(context).size.height,
+            child: ListView(
+              children: timestamps.map((timestamp) => Text(timestamp)).toList(),
+              // children: List.generate(
+              //   1000,
+              //   (index) => Text('$index'),
+              // ),
+            ),
+          ),
+        );
