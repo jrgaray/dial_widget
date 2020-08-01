@@ -99,7 +99,7 @@ class _DialState extends State<Dial> {
                     entry.value,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 10,
+                      fontSize: 9,
                     ),
                   ),
                   offset: Offset(0, widget.height / -2.0 + 20),
