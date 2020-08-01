@@ -4,11 +4,11 @@ final dialSetContainer =
     (BuildContext context, double yOffset, Widget child) => Container(
           alignment: Alignment.bottomCenter,
           height: MediaQuery.of(context).size.height,
-          width: yOffset,
+          width: MediaQuery.of(context).size.width,
           child: Transform.translate(
-            offset: Offset(0, MediaQuery.of(context).size.height / 3),
+            offset: Offset(0, yOffset / 3),
             child: Transform.scale(
-              scale: 1.8,
+              scale: 4,
               child: child,
             ),
           ),

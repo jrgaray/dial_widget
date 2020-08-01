@@ -15,6 +15,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  // State Variables
   List<String> timestamps;
   String hour;
   List<String> hourOptions;
@@ -22,7 +23,10 @@ class _MyHomePageState extends State<MyHomePage> {
   List<String> minuteOptions;
   String amPM;
   List<String> amPMOptions;
-  // @override
+
+  // Initialize the the options that will be passed into the dial components,
+  // and the starting state of the timestamps.
+  @override
   void initState() {
     super.initState();
     hourOptions = buildOptions(1, 12);
@@ -34,21 +38,19 @@ class _MyHomePageState extends State<MyHomePage> {
     amPM = amPMOptions[0];
   }
 
+  // State handlers
   void hourHandler(value) => setState(() => hour = value);
   void minuteHandler(value) => setState(() => minute = value);
   void amPMHandler(value) => setState(() => amPM = value);
-
-  void handleClick() {
-    setState(() {
-      timestamps.add('$hour:$minute $amPM');
-    });
-  }
+  void handleClick() => setState(() => timestamps.add('$hour:$minute $amPM'));
 
   @override
   Widget build(BuildContext context) {
+    // Set of dials and button. Essentially a form.
     final dialSet = (double height, Function handleClick) {
-      final radius = height / 2;
-      double calc(double factor) => radius * factor * 2;
+      // Calculation functions.
+      double calcHeight(double factor) => height * factor;
+      double calcFontSize(double factor) => height / factor;
 
       return Stack(
         alignment: Alignment.center,
@@ -56,39 +58,44 @@ class _MyHomePageState extends State<MyHomePage> {
           Dial(
             value: hour,
             onChange: hourHandler,
-            height: calc(1.0),
+            height: calcHeight(.5),
             color: Colors.blue,
             options: hourOptions,
           ),
           Dial(
             value: minute,
             onChange: minuteHandler,
-            height: calc(0.8),
+            height: calcHeight(0.4),
             color: Colors.yellow,
             options: minuteOptions,
           ),
           Dial(
+            limit: true,
             value: amPM,
             onChange: amPMHandler,
-            height: calc(0.6),
+            height: calcHeight(0.3),
             color: Colors.red,
             options: amPMOptions,
           ),
+          // Used the following as a resource to create the Button:
+          // https://stackoverflow.com/questions/49809351/how-to-create-a-circle-icon-button-in-flutter/55406627
           ClipOval(
             child: Material(
               color: Colors.green, // button color
               child: InkWell(
                 splashColor: Colors.white, // inkwell color
                 child: SizedBox(
-                  width: calc(.4),
-                  height: calc(.4),
+                  width: calcHeight(.2),
+                  height: calcHeight(.2),
                   child: Center(
                     child: Transform.translate(
-                      offset: Offset(0, -50),
+                      offset: Offset(0, calcHeight(-0.05)),
                       child: Text(
                         'SAVE',
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20),
+                          fontWeight: FontWeight.bold,
+                          fontSize: calcFontSize(25),
+                        ),
                       ),
                     ),
                   ),
@@ -97,22 +104,12 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
           ),
-          // MaterialButton(
-          //   shape: CircleBorder(),
-          //   height: calc(0.55),
-          //   elevation: 2.0,
-          //   // materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          //   minWidth: calc(0.55),
-          //   color: Colors.green,
-          //   onPressed: () => handleClick(),
-          // ),
         ],
       );
     };
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
 
-    final yOffset = screenHeight > 500 ? screenWidth : screenHeight;
+    // Calculate a relative height.
+    final height = MediaQuery.of(context).size.height / 2.0;
 
     return Scaffold(
       appBar: appBar(widget),
@@ -121,11 +118,14 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Stack(
           alignment: Alignment.center,
           children: <Widget>[
+            // List where the timestamps live.
             timestampList(context, timestamps),
+            // Container for the dials.
             dialSetContainer(
               context,
-              yOffset,
-              dialSet(yOffset, handleClick),
+              height,
+              // Set of dial inputs.
+              dialSet(height, handleClick),
             ),
           ],
         ),

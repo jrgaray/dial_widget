@@ -1,3 +1,4 @@
+// Function that builds a list of Strings from start and end numbers.
 List<String> buildOptions(int start, int end) {
   List<String> options = [];
   for (int i = start; i < end + 1; i++) {
