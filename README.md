@@ -1,4 +1,4 @@
-# timestamp_dial
+# dial_widget
 
 Flutter dial component.
 
