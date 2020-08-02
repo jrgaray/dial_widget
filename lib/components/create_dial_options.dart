@@ -20,7 +20,7 @@ List<Widget> createDialOptions(
                     ? Colors.red[900]
                     : Colors.black,
                 fontWeight: FontWeight.bold,
-                fontSize: MediaQuery.of(ctx).size.height / 50,
+                fontSize: MediaQuery.of(ctx).size.height / 80,
               ),
             ),
             offset: Offset(0, widget.height / -2.2),

@@ -47,7 +47,8 @@ class MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     // Calculate a relative height.
     final screenHeight = MediaQuery.of(context).size.height;
-    final dialHeight = screenHeight / 2.0;
+
+    final dialHeight = screenHeight / 3;
 
     return Scaffold(
       appBar: AppBar(title: Text(widget.title)),
