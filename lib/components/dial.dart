@@ -26,13 +26,15 @@ class Dial extends StatefulWidget {
 }
 
 class _DialState extends State<Dial> {
-  static const double radian = 2 * pi;
+  static const double radianCircle = 2 * pi;
+  static const double degree = radianCircle / 360;
   // Dial variables.
   // angle is used to track the the rotation of the dial in radians.
   // slices is the number of sections the dial will have.
   // tick is length of one slice.
   // halfTick is half the length of one slice.
   // optionsLength is the number of options.
+  double radius;
   double angle;
   int slices;
   double tick;
@@ -45,9 +47,10 @@ class _DialState extends State<Dial> {
   @override
   void initState() {
     super.initState();
+    radius = widget.height / 2;
     angle = 0;
     slices = widget.options.length > 11 ? widget.options.length : 30;
-    tick = radian / slices;
+    tick = radianCircle / slices;
     halfTick = tick / 2;
     optionsLength = widget.options.length;
     lowerLimit = 0.0;
@@ -70,7 +73,7 @@ class _DialState extends State<Dial> {
   void snapDialToValue(slice) => setState(() => angle = slice * tick);
 
   // Panning handler.
-  void _panHandler(DragUpdateDetails d, int size, double radius) {
+  void _panHandler(DragUpdateDetails d, double radius) {
     // Get the change in rotation. Look at function for resource link.
     double rotationalChange = calculateRotationalChange(d, radius);
 
@@ -86,9 +89,9 @@ class _DialState extends State<Dial> {
     // Change angle depending on movement.
     setState(() {
       if (isMovementClockwise && isAngleWithinLowerLimit)
-        angle += radian / 360;
+        angle += degree;
       else if (isMovementCounterClockwise && isAngleWithinUpperLimit)
-        angle -= radian / 360;
+        angle -= degree;
       else
         return;
     });
@@ -110,17 +113,23 @@ class _DialState extends State<Dial> {
       onPanUpdate: (details) {
         _panHandler(
           details,
-          optionsLength,
-          widget.height / 2.0,
+          radius,
         );
       },
       child: Container(
         height: widget.height,
         width: widget.height,
         child: Stack(
-          children: createDialOptions(widget, calcAngle),
+          children: createDialOptions(widget, calcAngle, widget.value, context),
         ),
         decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black38,
+              offset: Offset(0.0, -2.0),
+              blurRadius: 4.0,
+            )
+          ],
           shape: BoxShape.circle,
           color: widget.color,
         ),

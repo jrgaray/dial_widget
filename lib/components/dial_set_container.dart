@@ -6,9 +6,9 @@ final dialSetContainer =
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           child: Transform.translate(
-            offset: Offset(0, yOffset / 3),
+            offset: Offset(0, yOffset / 1.3),
             child: Transform.scale(
-              scale: 4,
+              scale: 1.2,
               child: child,
             ),
           ),
